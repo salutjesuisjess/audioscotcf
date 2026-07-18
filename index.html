@@ -477,8 +477,22 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     }).catch(function () {});
   }
 
+  function tryPlayPendingAudio() {
+    const pendingId = window.__pendingAutoplayAudioId;
+    if (!pendingId) return;
+    window.__pendingAutoplayAudioId = null;
+    const audio = document.getElementById(pendingId);
+    const btn = document.getElementById('playbtn-' + pendingId);
+    if (audio) {
+      audio.play().then(() => {
+        if (btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>';
+      }).catch(() => {});
+    }
+  }
+
   if (saved) {
     gate.style.display = 'none';
+    tryPlayPendingAudio();
   }
 
   window.submitGateEmail = function () {
@@ -496,7 +510,10 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     btn.textContent = 'Entrando...';
     logAccess(email, 'primeiro_acesso');
     localStorage.setItem(STORAGE_KEY, email);
-    setTimeout(function () { gate.style.display = 'none'; }, 400);
+    setTimeout(function () {
+      gate.style.display = 'none';
+      tryPlayPendingAudio();
+    }, 400);
   };
 
   document.getElementById('gate-email').addEventListener('keydown', function (e) {
@@ -1394,9 +1411,16 @@ function showQuestion(idx) {
       const btn = document.getElementById('playbtn-' + aid);
       if (audio) {
         document.querySelectorAll('audio').forEach(a => a.pause());
-        audio.play().then(() => {
-          if (btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>';
-        }).catch(() => {});
+        const gateEl = document.getElementById('email-gate');
+        const gateOpen = gateEl && getComputedStyle(gateEl).display !== 'none';
+        if (gateOpen) {
+          // Segura o autoplay até o gate de email ser fechado
+          window.__pendingAutoplayAudioId = aid;
+        } else {
+          audio.play().then(() => {
+            if (btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>';
+          }).catch(() => {});
+        }
       }
     }, 300);
   }
