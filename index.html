@@ -357,6 +357,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .nav-header {
   padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
 }
+.nav-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.nav-header-actions { display: flex; gap: 0.35rem; flex-shrink: 0; }
 .nav-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
 .nav-sub { font-size: 0.72rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
 
@@ -513,7 +515,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   /* Força a quebra: tudo que vem depois disso vai pra uma nova linha */
   .topbar-break { order: 4; display: block; }
 
-  /* ── Linha 2: "X / Y respondidas" + barra + ☑️ 🗑️ ☀️ ── */
+  /* ── Linha 2: "X / Y respondidas" + barra + ☀️ ── */
   .topbar-spacer { order: 5; }
   .progress-row {
     order: 5;
@@ -596,6 +598,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   /* Botão "Écouter (IA)": no celular mostra só o ícone, pra não cortar/ empurrar o resto */
   .tts-btn { padding: 0.35rem !important; margin-left: 0 !important; }
   .tts-btn span { display: none; }
+
+  /* Botões ☑️/🗑️ que ficam agora no cabeçalho do painel de navegação */
+  .nav-header-actions .topbar-btn { font-size: 0.85rem !important; padding: 0.38rem 0.6rem !important; }
 
   .panel-header { padding: 0.6rem 0.7rem; }
   .transcript-body { padding: 0.85rem; font-size: 0.92rem; line-height: 1.65; margin: 0.5rem; }
@@ -911,8 +916,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     <div style="width:90px;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;flex-shrink:0;">
       <div id="progress-bar-fill" style="height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width 0.3s;"></div>
     </div>
-    <button class="topbar-btn" onclick="toggleSelectionMode()" id="sel-mode-btn" title="Selecionar questões para resetar" style="padding:0.3rem 0.6rem;font-size:0.75rem;flex-shrink:0;">☑️</button>
-    <button class="topbar-btn" onclick="clearProgress()" title="Apagar histórico" style="padding:0.3rem 0.6rem;font-size:0.75rem;flex-shrink:0;">🗑️</button>
     <button class="topbar-btn" id="theme-btn" onclick="toggleTheme()" title="Alternar tema" style="padding:0.3rem 0.6rem;font-size:0.75rem;flex-shrink:0;">☀️</button>
   </div>
 </div>
@@ -973,8 +976,16 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     <!-- RIGHT: NAVIGATION -->
     <div class="panel-right">
       <div class="nav-header">
-        <div class="nav-title" id="nav-title">Questions</div>
-        <div class="nav-sub" id="nav-sub">—</div>
+        <div class="nav-header-top">
+        <div>
+          <div class="nav-title" id="nav-title">Questions</div>
+          <div class="nav-sub" id="nav-sub">—</div>
+        </div>
+        <div class="nav-header-actions">
+          <button class="topbar-btn" onclick="toggleSelectionMode()" id="sel-mode-btn" title="Selecionar questões para resetar" style="padding:0.3rem 0.55rem;font-size:0.75rem;">☑️</button>
+          <button class="topbar-btn" onclick="clearProgress()" title="Apagar histórico" style="padding:0.3rem 0.55rem;font-size:0.75rem;">🗑️</button>
+        </div>
+      </div>
         <button id="prova-result-btn" onclick="showProvaResult()" style="display:none;margin-top:0.45rem;width:100%;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.4rem;font-size:0.72rem;font-weight:700;cursor:pointer;">🏆 Voir le résultat du test</button>
       </div>
       <div id="group-toggle-row" style="display:flex;border-bottom:1px solid var(--border);flex-shrink:0;">
